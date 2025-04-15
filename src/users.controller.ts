@@ -10,10 +10,12 @@ import {
   Redirect,
   Query,
   Headers,
+  Post,
+  Body,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 
-interface Video {
+interface VideoDTO {
   id: string;
   name: string;
 }
@@ -70,7 +72,7 @@ export class UsersController {
   }
 
   @Get('/videos/:id/:name')
-  getVideosById(@Param() params: Video) {
+  getVideosById(@Param() params: VideoDTO) {
     return `Working Videos ${params.id} ${params.name}`;
   }
 
@@ -91,5 +93,12 @@ export class UsersController {
   getVideosByHeader(@Headers() headers: Record<string, any>) {
     console.log(headers);
     return `Working Videos ${JSON.stringify(headers)}`;
+  }
+
+  // Request body
+  @Post('/video')
+  getVideosByBody(@Body() body: VideoDTO) {
+    console.log(body);
+    return `Working Videos ${JSON.stringify(body)}`;
   }
 }
