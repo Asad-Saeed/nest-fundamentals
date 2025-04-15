@@ -8,8 +8,15 @@ import {
   Res,
   Header,
   Redirect,
+  Query,
+  Headers,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
+
+interface Video {
+  id: string;
+  name: string;
+}
 
 @Controller('/users')
 export class UsersController {
@@ -42,8 +49,8 @@ export class UsersController {
   }
 
   @Get('/profile/:id')
-  getProfileById(@Param('id') id: string) {
-    return `Hello Asad ${id}`;
+  getProfileById(@Param() params: string) {
+    return `Hello Asad ${params}`;
   }
 
   @Get('/account')
@@ -54,5 +61,35 @@ export class UsersController {
   @Get('/wallet')
   getWallet() {
     return `Working Wallet`;
+  }
+
+  // Route parameters
+  @Get('/videos/:id')
+  getVideos(@Param('id') id: string) {
+    return `Working Videos ${id}`;
+  }
+
+  @Get('/videos/:id/:name')
+  getVideosById(@Param() params: Video) {
+    return `Working Videos ${params.id} ${params.name}`;
+  }
+
+  // Query parameters
+  @Get('/videos')
+  getVideosBySearch(@Query() query: Record<string, any>) {
+    console.log(query);
+    return `Working Videos ${JSON.stringify(query)}`;
+  }
+  @Get('/videos')
+  getVideosByName(@Query('name') name: string) {
+    console.log(name);
+    return `Working Videos ${name}`;
+  }
+
+  // Request headers
+  @Get('/videos')
+  getVideosByHeader(@Headers() headers: Record<string, any>) {
+    console.log(headers);
+    return `Working Videos ${JSON.stringify(headers)}`;
   }
 }
