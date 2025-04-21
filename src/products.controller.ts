@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Ip,
   Param,
   Post,
   Put,
@@ -11,7 +12,8 @@ import CreateProductDto from './dto/create-product.dto';
 
 const products: CreateProductDto[] = [];
 
-@Controller('/products')
+// @Controller({ path: '/products', host: ':app.domain.com' })
+@Controller({ path: '/products' })
 export class ProductsController {
   @Post()
   addProduct(@Body() product: CreateProductDto) {
@@ -19,7 +21,8 @@ export class ProductsController {
     return { data: products, message: 'Product added successfully' };
   }
   @Get()
-  getProducts() {
+  getProducts(@Ip() ip: string) {
+    console.log(ip);
     return { data: products, message: 'Products fetched successfully' };
   }
   @Get(':id')
