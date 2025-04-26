@@ -105,6 +105,7 @@
 import { Controller, Inject, Optional } from '@nestjs/common';
 import { UsersStore } from './store/users.store';
 import { Config } from './store/config';
+import { Subject } from 'rxjs';
 
 @Controller('/users')
 export class UsersController {
@@ -131,10 +132,14 @@ export class UsersController {
     @Inject('MAIL') private mail: string[],
     @Inject('ENV_CONFIG') private evvConfig: { host: string; port: number },
     private config: Config,
+    @Inject('Event_Store') private eventBus$: Subject<any>,
+    @Inject('DATABASE_CONNECTION') private connection: any,
   ) {
     console.log('Database URL', this.dbUrl);
     console.log('Mail', this.mail);
     console.log('ENV Config', this.evvConfig);
     console.log('Config', this.config);
+    console.log('Event Bus', this.eventBus$);
+    console.log('DB Connection', this.connection);
   }
 }
