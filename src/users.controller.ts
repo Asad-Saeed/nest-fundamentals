@@ -104,13 +104,14 @@
 // }
 import { Controller, Inject, Optional } from '@nestjs/common';
 import { UsersStore } from './store/users.store';
+import { Config } from './store/config';
 
 @Controller('/users')
 export class UsersController {
   // Provider injection / Lazy injection ==Inject only when needed
-  constructor(private store: UsersStore) {
-    console.log(this.store);
-  }
+  // constructor(private store: UsersStore) {
+  //   console.log(this.store);
+  // }
   // If you want to inject a service into a controller you can use the @Inject() decorator
   // constructor(@Inject(UsersStore) private store: UsersStore) {
   //   console.log(this.store);
@@ -123,4 +124,17 @@ export class UsersController {
   // constructor(@Optional() private store: UsersStore) {
   //   console.log(this.store);
   // }
+
+  // Value Dependency injection
+  constructor(
+    @Inject('DATABASE_URL') private dbUrl: string,
+    @Inject('MAIL') private mail: string[],
+    @Inject('ENV_CONFIG') private evvConfig: { host: string; port: number },
+    private config: Config,
+  ) {
+    console.log('Database URL', this.dbUrl);
+    console.log('Mail', this.mail);
+    console.log('ENV Config', this.evvConfig);
+    console.log('Config', this.config);
+  }
 }

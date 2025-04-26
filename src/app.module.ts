@@ -4,6 +4,7 @@ import { AlbumsController } from './albums.controller';
 import { ProductsController } from './products.controller';
 import { UsersStore } from './store/users.store';
 import { Store } from './store/store';
+import { Config } from './store/config';
 
 @Module({
   // imports: [],
@@ -19,6 +20,25 @@ import { Store } from './store/store';
   //providers: [UsersStore],
 
   // Create a alias
-  providers: [UsersStore, { provide: 'STORE', useExisting: UsersStore }],
+  // providers: [UsersStore, { provide: 'STORE', useExisting: UsersStore }],
+  // Value Dependency
+  providers: [
+    { provide: 'DATABASE_URL', useValue: 'localhost' },
+    {
+      provide: 'MAIL',
+      useValue: ['mail.google.com', 'mail.yahoo.com', 'mail.hotmail.com'],
+    },
+    {
+      provide: 'ENV_CONFIG',
+      useValue: {
+        host: 'localhost',
+        port: 3000,
+      },
+    },
+    {
+      provide: Config,
+      useValue: new Config('localhost', 3000),
+    },
+  ],
 })
 export class AppModule {}
