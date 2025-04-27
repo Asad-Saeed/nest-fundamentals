@@ -157,8 +157,8 @@ import {
   Put,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateUserDTO } from './dto/create-users.dto';
-import { User, UsersService } from './users.service';
+import { CreateUserDTO } from '../../dto/create-users.dto';
+import { User, UsersService } from '../services/users.service';
 
 @Controller('/users')
 export class UsersController {
