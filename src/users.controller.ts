@@ -102,44 +102,94 @@
 //     return `Working Videos ${JSON.stringify(body)}`;
 //   }
 // }
-import { Controller, Inject, Optional } from '@nestjs/common';
-import { UsersStore } from './store/users.store';
-import { Config } from './store/config';
-import { Subject } from 'rxjs';
+
+//////////////// Dependency Injection ////////////////
+
+// import { Controller, Inject, Optional } from '@nestjs/common';
+// import { UsersStore } from './store/users.store';
+// import { Config } from './store/config';
+// import { Subject } from 'rxjs';
+
+// @Controller('/users')
+// export class UsersController {
+//   // Provider injection / Lazy injection ==Inject only when needed
+//   // constructor(private store: UsersStore) {
+//   //   console.log(this.store);
+//   // }
+//   // If you want to inject a service into a controller you can use the @Inject() decorator
+//   // constructor(@Inject(UsersStore) private store: UsersStore) {
+//   //   console.log(this.store);
+//   // }
+//   // it is used if injection token and class name are not the same
+//   // constructor(@Inject('STORE') private store: UsersStore) {
+//   //   console.log(this.store);
+//   // }
+//   // Optional injection
+//   // constructor(@Optional() private store: UsersStore) {
+//   //   console.log(this.store);
+//   // }
+
+//   // Value Dependency injection
+//   constructor(
+//     @Inject('DATABASE_URL') private dbUrl: string,
+//     @Inject('MAIL') private mail: string[],
+//     @Inject('ENV_CONFIG') private evvConfig: { host: string; port: number },
+//     private config: Config,
+//     @Inject('Event_Store') private eventBus$: Subject<any>,
+//     @Inject('DATABASE_CONNECTION') private connection: any,
+//   ) {
+//     console.log('Database URL', this.dbUrl);
+//     console.log('Mail', this.mail);
+//     console.log('ENV Config', this.evvConfig);
+//     console.log('Config', this.config);
+//     console.log('Event Bus', this.eventBus$);
+//     console.log('DB Connection', this.connection);
+//   }
+// }
+
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  NotFoundException,
+} from '@nestjs/common';
+import { CreateUserDTO } from './dto/create-users.dto';
+import { User, UsersService } from './users.service';
 
 @Controller('/users')
 export class UsersController {
-  // Provider injection / Lazy injection ==Inject only when needed
-  // constructor(private store: UsersStore) {
-  //   console.log(this.store);
-  // }
-  // If you want to inject a service into a controller you can use the @Inject() decorator
-  // constructor(@Inject(UsersStore) private store: UsersStore) {
-  //   console.log(this.store);
-  // }
-  // it is used if injection token and class name are not the same
-  // constructor(@Inject('STORE') private store: UsersStore) {
-  //   console.log(this.store);
-  // }
-  // Optional injection
-  // constructor(@Optional() private store: UsersStore) {
-  //   console.log(this.store);
-  // }
+  constructor(private readonly usersService: UsersService) {}
 
-  // Value Dependency injection
-  constructor(
-    @Inject('DATABASE_URL') private dbUrl: string,
-    @Inject('MAIL') private mail: string[],
-    @Inject('ENV_CONFIG') private evvConfig: { host: string; port: number },
-    private config: Config,
-    @Inject('Event_Store') private eventBus$: Subject<any>,
-    @Inject('DATABASE_CONNECTION') private connection: any,
-  ) {
-    console.log('Database URL', this.dbUrl);
-    console.log('Mail', this.mail);
-    console.log('ENV Config', this.evvConfig);
-    console.log('Config', this.config);
-    console.log('Event Bus', this.eventBus$);
-    console.log('DB Connection', this.connection);
+  @Post()
+  createUser(@Body() createUserDto: CreateUserDTO) {
+    return this.usersService.addUser(createUserDto);
+  }
+
+  @Get()
+  findAllUsers(): CreateUserDTO[] {
+    return this.usersService.getUsers();
+  }
+
+  @Get(':id')
+  async findUserById(@Param('id') id: string): Promise<User> {
+    const user = await this.usersService.getUser(id);
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+    return user;
+  }
+
+  @Put(':id')
+  updateUser(@Param('id') id: string, @Body() updateUserDto: CreateUserDTO) {
+    return this.usersService.updateUser(id, updateUserDto);
+  }
+
+  @Delete(':id')
+  deleteUser(@Param('id') id: string) {
+    return this.usersService.deleteUser(id);
   }
 }

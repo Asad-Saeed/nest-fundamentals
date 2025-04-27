@@ -6,6 +6,7 @@ import { UsersStore } from './store/users.store';
 import { Store } from './store/store';
 import { Config, ENVConfig } from './store/config';
 import { BehaviorSubject, ReplaySubject } from 'rxjs';
+import { UsersService } from './users.service';
 
 const IS_DEV_MODE = true;
 const createConnection = (dbOptions: any) => {
@@ -36,6 +37,7 @@ const createConnection = (dbOptions: any) => {
   // Value Dependency
 
   providers: [
+    UsersService,
     { provide: 'DATABASE_URL', useValue: 'localhost' },
     {
       provide: 'MAIL',
